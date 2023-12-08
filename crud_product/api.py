@@ -12,7 +12,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        self.send_notification('New user added!')
+        self.send_notification('New Product added!')
         return response
 
 

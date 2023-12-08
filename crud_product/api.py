@@ -11,12 +11,10 @@ class ProductListCreateView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
 
     def create(self, request, *args, **kwargs):
-        # Логика создания объекта Product
+        response = super().create(request, *args, **kwargs)
+        self.send_notification('New user added!')
+        return response
 
-        # Отправка уведомления
-        self.send_notification('New product added!')
-
-        return Response({'message': 'Product created successfully'}, status=status.HTTP_201_CREATED)
 
     def send_notification(self, message):
         channel_layer = get_channel_layer()

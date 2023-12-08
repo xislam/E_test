@@ -150,4 +150,5 @@ CHANNEL_LAYERS = {
     },
 }
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://77.240.39.58:81", "http://127.0.0.1:8000",
+                        "http://127.0.0.1:81",
                         "http://77.240.39.58:81"]

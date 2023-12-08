@@ -26,3 +26,14 @@ bash
 
     docker-compose build
     docker-compose up
+
+
+
+Веб Socket Для подключения в группу
+
+      {
+        "type": "join_group",
+        "group": "notification_group"
+      }
+Надо отправить такое сообщение
+

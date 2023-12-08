@@ -14,7 +14,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
         # Логика создания объекта Product
 
         # Отправка уведомления
-        self.send_notification('Новый продукт добавлен!')
+        self.send_notification('New product added!')
 
         return Response({'message': 'Product created successfully'}, status=status.HTTP_201_CREATED)
 
@@ -41,7 +41,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         # Логика обновления объекта Product
 
         # Отправка уведомления
-        self.send_notification('Продукт обновлен!')
+        self.send_notification('Product updated!')
 
         return Response({'message': 'Product updated successfully'}, status=status.HTTP_200_OK)
 
@@ -49,7 +49,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         # Логика удаления объекта Product
 
         # Отправка уведомления
-        self.send_notification('Продукт удален!')
+        self.send_notification('Product removed!')
 
         return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 

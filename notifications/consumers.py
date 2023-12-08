@@ -1,46 +1,32 @@
+import codecs
 import json
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
-        # Подключение к группе
-        await self.channel_layer.group_add(
-            'notification_group',
-            self.channel_name
-        )
-
-    async def disconnect(self, close_code):
-        # Отключение от группы
-        await self.channel_layer.group_discard(
-            'notification_group',
-            self.channel_name
-        )
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        message_type = text_data_json.get('type')
 
-        # Обработка полученного сообщения
-        print(f"Received message: {message}")
+        if message_type == 'join_group':
+            # Присоединяем клиента к группе
+            await self.channel_layer.group_add('notification_group', self.channel_name)
+            print(f"Client {self.channel_name} joined 'notification_group'")
 
-        # Отправка обратно клиенту
-        await self.send(text_data=json.dumps({
-            'message': 'Message received and processed successfully!',
-        }))
-
-        # Отправка уведомления всем подключенным клиентам
-        await self.channel_layer.group_send(
-            'notification_group',
-            {
-                'type': 'send_notification',
-                'message': 'New product added/updated/deleted!',
-            }
-        )
+    async def disconnect(self, close_code):
+        # Удаляем клиента из группы при отключении
+        await self.channel_layer.group_discard('notification_group', self.channel_name)
+        print(f"Client {self.channel_name} left 'notification_group'")
 
     async def send_notification(self, event):
-        # Отправка уведомления клиенту
+        # Декодируем Unicode escape sequences в UTF-8
+        decoded_message = codecs.decode(event['message'], 'unicode_escape').encode('latin1').decode('utf-8')
+        print(decoded_message)
+        # Отправка уведомления всем подключенным клиентам в группе 'notification_group'
         await self.send(text_data=json.dumps({
-            'message': event['message']
+            'message': decoded_message,
         }))

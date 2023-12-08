@@ -11,7 +11,7 @@ class UserListCreateView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        self.send_notification('Новый пользователь добавлен!')
+        self.send_notification('New user added!')
         return response
 
     def send_notification(self, message):
@@ -35,12 +35,12 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        self.send_notification('Пользователь обновлен!')
+        self.send_notification('User updated!')
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
-        self.send_notification('Пользователь удален!')
+        self.send_notification('User deleted!')
         return response
 
     def send_notification(self, message):

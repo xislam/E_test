@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Notifications</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #notifications {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="notifications"></div>
+
+  <script>
+    // Функция для отображения уведомлений
+    function showNotification(message) {
+      const notificationsDiv = document.getElementById('notifications');
+      const notificationDiv = document.createElement('div');
+      notificationDiv.textContent = message;
+      notificationsDiv.appendChild(notificationDiv);
+    }
+
+    // Подключение к веб-сокету
+    const socket = new WebSocket('ws://127.0.0.1:8000/ws/notifications/');
+
+    // Обработчик события открытия соединения
+    socket.addEventListener('open', (event) => {
+      console.log('WebSocket connected:', event);
+    });
+
+    // Обработчик события получения сообщения от сервера
+    socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+      const message = data.message;
+      console.log('Received message:', message);
+      showNotification(message);
+    });
+
+    // Обработчик события закрытия соединения
+    socket.addEventListener('close', (event) => {
+      console.log('WebSocket closed:', event);
+    });
+
+    // Обработчик события ошибки
+    socket.addEventListener('error', (event) => {
+      console.error('WebSocket error:', event);
+    });
+  </script>
+</body>
+</html>

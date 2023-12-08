@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    networks:
+      - redisnet
+
+  pgdb_e_test:
+    image: postgres:13.3
+    env_file:
+      - .env
+    container_name: pgdb_e_test
+    environment:
+      POSTGRES_INITDB_ARGS: "-A md5"
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data
+    networks:
+      - pgdbnet
+
+  django_e_e:
+    container_name: django_e_e
+    build: .
+    command:
+      - /bin/bash
+      - -c
+      - |
+        python manage.py makemigrations
+        python manage.py migrate 
+        python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - pgdb_e_test
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - .:/code
+    networks:
+      - webnet
+      - redisnet
+      - pgdbnet
+    links:
+      - redis
+
+
+
+  nginx_end_point:
+    image: nginx:1.15.0
+    depends_on:
+      - django_e_e
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./static:/static
+      - ./media:/media
+    networks:
+      - webnet
+    ports:
+      - "81:81"
+
+networks:
+  webnet:
+  redisnet:
+  pgdbnet:
+
+volumes:
+  pgdbdata: { }
